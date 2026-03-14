@@ -752,5 +752,3 @@ The convention is enforced by the import rules in Section 21: external consumers
 If Feature A's service needs to call Feature B's service (per the cross-feature communication rules in Section 20), the barrel file exports the service class and its interface type. This is a deliberate, explicit widening of the public API — the team makes a conscious decision that this service method is part of the feature's public contract. The default is to keep services internal until a concrete need arises.
 
 ---
-
-*This document is a living reference. It evolves through Architecture Decision Records (ADRs) stored in `docs/adr/`. When a decision documented here is revisited, an ADR records the context, the new decision, the consequences, and the alternatives considered.*
