@@ -3,7 +3,7 @@
 > Quick reference for the express-api-starter project structure.
 > For architectural explanations, see `express-api-architecture.md`.
 
-**Validation:** All request validation uses [Zod](https://zod.dev/) schemas in `validation.ts` files.
+
 
 ---
 
