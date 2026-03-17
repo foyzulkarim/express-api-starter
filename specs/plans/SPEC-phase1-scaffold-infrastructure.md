@@ -680,7 +680,6 @@ src/server.ts
 |---------|---------|
 | `express` | HTTP framework |
 | `awilix` | Dependency injection |
-| `awilix-express` | Express integration for Awilix |
 | `zod` | Schema validation (env + request) |
 | `pino` | Structured logging |
 | `pino-pretty` | Dev-mode log formatting |

@@ -152,8 +152,8 @@ The barrel file is the feature's public API. It exports the versioned route hand
 The project uses **global version-first URL path versioning**. The API version prefix comes first in the URL path, providing consumers with a single, complete API surface per version.
 
 ```
-URL pattern:     /v1/orders    /v1/users    /v2/orders    /v2/users
-                 └── global version prefix ──┘
+URL pattern:     /api/v1/orders    /api/v1/users    /api/v2/orders    /api/v2/users
+                    └── global version prefix ──┘
 ```
 
 ### Why Global Over Module-First
@@ -240,7 +240,7 @@ Client sends HTTP request
     │
     ├─→ Global version router matches /v1/* or /v2/*
     │   │
-    │   └─→ Feature router matches specific path (e.g., /v1/orders/:id)
+    │   └─→ Feature router matches specific path (e.g., /api/v1/orders/:id)
     │       │
     │       ├─→ authenticate middleware (if route is protected)
     │       │     Extracts JWT from Authorization header.
@@ -571,7 +571,7 @@ When the process receives a termination signal (SIGTERM from the container orche
 
 ### Shutdown Sequence
 
-The shutdown handler is registered in `server.ts`. When a signal is received, the sequence is as follows. First, the HTTP server stops accepting new connections (calling `server.close()`). Existing in-flight requests are allowed to complete up to a configurable timeout (default 30 seconds). Second, BullMQ consumers stop picking up new jobs and wait for current jobs to complete. Third, the Prisma client disconnects from the database, closing the connection pool. Fourth, the Redis client disconnects. Fifth, the OpenTelemetry SDK flushes pending traces and metrics. Finally, the process exits with code 0.
+The shutdown handler is registered in `server.ts`. When a signal is received, the sequence is as follows. First, the HTTP server stops accepting new connections (calling `server.close()`). Existing in-flight requests are allowed to complete up to a configurable timeout (default 5 seconds). Second, BullMQ consumers stop picking up new jobs and wait for current jobs to complete. Third, the Prisma client disconnects from the database, closing the connection pool. Fourth, the Redis client disconnects. Fifth, the OpenTelemetry SDK flushes pending traces and metrics. Finally, the process exits with code 0.
 
 If the graceful shutdown exceeds the timeout, the process exits with code 1 (force kill). This prevents a stuck request from keeping the container alive indefinitely during a deployment.
 
