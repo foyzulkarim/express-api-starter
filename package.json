@@ -1,6 +1,6 @@
 {
   "name": "express-api-starter",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "type": "module",
   "description": "Production-grade Express.js + TypeScript API starter template",
   "main": "dist/server.js",
