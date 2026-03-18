@@ -1,7 +1,22 @@
 import { config } from './index.js';
 
-export const loggerConfig = {
+export const loggerConfig = Object.freeze({
   level: config.LOG_LEVEL,
   pretty: config.NODE_ENV === 'development',
-  redactPaths: ['password', 'token', 'secret', 'authorization'],
-} as const;
+  redactPaths: Object.freeze([
+    'req.headers.authorization',
+    'req.headers.cookie',
+    'req.body.password',
+    'req.body.token',
+    'req.body.secret',
+    '*.password',
+    '*.token',
+    '*.secret',
+    '*.authorization',
+    '*.cookie',
+    'password',
+    'token',
+    'secret',
+    'authorization',
+  ]),
+});

@@ -3,8 +3,12 @@ import { randomUUID } from 'node:crypto';
 
 const storage = new AsyncLocalStorage<string>();
 
-export const correlationIdStorage = storage;
-
-export function getCorrelationId(): string {
-  return storage.getStore() ?? randomUUID();
+export function getCorrelationId(): string | undefined {
+  return storage.getStore();
 }
+
+export function runWithCorrelationId<T>(correlationId: string, fn: () => T): T {
+  return storage.run(correlationId, fn);
+}
+
+export { randomUUID };

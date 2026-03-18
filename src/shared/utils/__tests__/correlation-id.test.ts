@@ -1,24 +1,26 @@
 import { describe, it, expect } from 'vitest';
-import { correlationIdStorage, getCorrelationId } from '../correlation-id.js';
+import { getCorrelationId, runWithCorrelationId } from '../correlation-id.js';
 
 describe('correlation-id', () => {
-  it('returns a valid UUID when no ID is stored', () => {
+  it('returns undefined when no ID is stored', () => {
     const id = getCorrelationId();
-    expect(id).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i);
+    expect(id).toBeUndefined();
   });
 
   it('returns the stored correlation ID when available', () => {
     const storedId = 'test-correlation-id-123';
-    correlationIdStorage.run(storedId, () => {
+    const result = runWithCorrelationId(storedId, () => {
       const id = getCorrelationId();
       expect(id).toBe(storedId);
+      return id;
     });
+    expect(result).toBe(storedId);
   });
 
-  it('returns different UUIDs when called outside storage context', () => {
+  it('returns undefined outside storage context on successive calls', () => {
     const id1 = getCorrelationId();
     const id2 = getCorrelationId();
-    // Each call generates a new UUID when not in storage context
-    expect(id1).not.toBe(id2);
+    expect(id1).toBeUndefined();
+    expect(id2).toBeUndefined();
   });
 });

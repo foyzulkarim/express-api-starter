@@ -5,7 +5,7 @@ export class AppError extends Error implements AppErrorContract {
   public readonly code: string;
   public readonly statusCode: number;
   public readonly isOperational: boolean;
-  public readonly details?: FieldError[];
+  public readonly details?: FieldError[] | undefined;
 
   constructor({
     code,
@@ -13,20 +13,19 @@ export class AppError extends Error implements AppErrorContract {
     statusCode,
     isOperational = true,
     details,
+    cause,
   }: {
     code: string;
     message: string;
     statusCode: number;
     isOperational?: boolean;
     details?: FieldError[];
+    cause?: unknown;
   }) {
-    super(message);
+    super(message, { cause });
     this.code = code;
     this.statusCode = statusCode;
     this.isOperational = isOperational;
-    if (details !== undefined) {
-      this.details = details;
-    }
-    Object.setPrototypeOf(this, new.target.prototype);
+    this.details = details ?? undefined;
   }
 }

@@ -5,5 +5,5 @@ export interface AppErrorContract {
   message: string;
   statusCode: number;
   isOperational: boolean;
-  details?: FieldError[];
+  details?: FieldError[] | undefined;
 }

@@ -9,6 +9,8 @@ export interface ErrorResponse {
     statusCode: number;
     correlationId: string;
     timestamp: string;
+    path?: string;
+    method?: string;
     details?: FieldError[];
   };
 }

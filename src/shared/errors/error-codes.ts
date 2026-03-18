@@ -1,4 +1,4 @@
-export const ErrorCode = {
+export const ErrorCodes = Object.freeze({
   VALIDATION_ERROR: 'VALIDATION_ERROR',
   BAD_REQUEST: 'BAD_REQUEST',
   UNAUTHORIZED: 'UNAUTHORIZED',
@@ -7,6 +7,6 @@ export const ErrorCode = {
   CONFLICT: 'CONFLICT',
   RATE_LIMIT_EXCEEDED: 'RATE_LIMIT_EXCEEDED',
   INTERNAL_ERROR: 'INTERNAL_ERROR',
-} as const;
+});
 
-export type ErrorCode = (typeof ErrorCode)[keyof typeof ErrorCode];
+export type ErrorCode = (typeof ErrorCodes)[keyof typeof ErrorCodes];

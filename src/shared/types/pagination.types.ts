@@ -8,4 +8,5 @@ export interface PaginatedResponse<T> {
   page: number;
   pageSize: number;
   total: number;
+  nextCursor?: string;
 }

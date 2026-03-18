@@ -6,7 +6,7 @@ const validEnv = {
   PORT: '3000',
   DATABASE_URL: 'postgresql://user:pass@localhost:5432/db',
   REDIS_URL: 'redis://localhost:6379',
-  JWT_SECRET: 'a'.repeat(32),
+  JWT_SECRET: 'a'.repeat(64),
 };
 
 describe('envSchema', () => {
@@ -38,31 +38,103 @@ describe('envSchema', () => {
     const { DATABASE_URL, ...env } = validEnv;
     const result = envSchema.safeParse(env);
     expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.flatten().fieldErrors).toHaveProperty('DATABASE_URL');
+    }
   });
 
   it('rejects missing REDIS_URL', () => {
     const { REDIS_URL, ...env } = validEnv;
     const result = envSchema.safeParse(env);
     expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.flatten().fieldErrors).toHaveProperty('REDIS_URL');
+    }
   });
 
-  it('rejects JWT_SECRET shorter than 32 characters', () => {
-    const result = envSchema.safeParse({ ...validEnv, JWT_SECRET: 'too-short' });
+  it('rejects missing JWT_SECRET', () => {
+    const { JWT_SECRET, ...env } = validEnv;
+    const result = envSchema.safeParse(env);
     expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.flatten().fieldErrors).toHaveProperty('JWT_SECRET');
+    }
+  });
+
+  it('rejects JWT_SECRET shorter than 64 characters', () => {
+    const result = envSchema.safeParse({ ...validEnv, JWT_SECRET: 'a'.repeat(63) });
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.flatten().fieldErrors).toHaveProperty('JWT_SECRET');
+    }
+  });
+
+  it('accepts JWT_SECRET of exactly 64 characters', () => {
+    const result = envSchema.safeParse({ ...validEnv, JWT_SECRET: 'a'.repeat(64) });
+    expect(result.success).toBe(true);
+  });
+
+  it('rejects invalid DATABASE_URL scheme', () => {
+    const result = envSchema.safeParse({ ...validEnv, DATABASE_URL: 'not-a-url' });
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.flatten().fieldErrors).toHaveProperty('DATABASE_URL');
+    }
+  });
+
+  it('rejects invalid REDIS_URL scheme', () => {
+    const result = envSchema.safeParse({ ...validEnv, REDIS_URL: 'http://localhost:6379' });
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.flatten().fieldErrors).toHaveProperty('REDIS_URL');
+    }
+  });
+
+  it('rejects negative PORT', () => {
+    const result = envSchema.safeParse({ ...validEnv, PORT: '-1' });
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.flatten().fieldErrors).toHaveProperty('PORT');
+    }
+  });
+
+  it('rejects non-numeric PORT', () => {
+    const result = envSchema.safeParse({ ...validEnv, PORT: 'abc' });
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.flatten().fieldErrors).toHaveProperty('PORT');
+    }
+  });
+
+  it('rejects PORT greater than 65535', () => {
+    const result = envSchema.safeParse({ ...validEnv, PORT: '70000' });
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.flatten().fieldErrors).toHaveProperty('PORT');
+    }
   });
 
   it('rejects invalid NODE_ENV', () => {
     const result = envSchema.safeParse({ ...validEnv, NODE_ENV: 'staging' });
     expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.flatten().fieldErrors).toHaveProperty('NODE_ENV');
+    }
   });
 
   it('rejects invalid LOG_LEVEL', () => {
     const result = envSchema.safeParse({ ...validEnv, LOG_LEVEL: 'verbose' });
     expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.flatten().fieldErrors).toHaveProperty('LOG_LEVEL');
+    }
   });
 
   it('rejects non-positive PORT', () => {
     const result = envSchema.safeParse({ ...validEnv, PORT: '0' });
     expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.flatten().fieldErrors).toHaveProperty('PORT');
+    }
   });
 });
