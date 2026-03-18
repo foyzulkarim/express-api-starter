@@ -1,8 +1,9 @@
 import type { AppErrorContract } from './app-error.contract.js';
+import type { ErrorCode } from './error-codes.js';
 import type { FieldError } from '../types/common.types.js';
 
 export class AppError extends Error implements AppErrorContract {
-  public readonly code: string;
+  public readonly code: ErrorCode;
   public readonly statusCode: number;
   public readonly isOperational: boolean;
   public readonly details?: FieldError[] | undefined;
@@ -15,7 +16,7 @@ export class AppError extends Error implements AppErrorContract {
     details,
     cause,
   }: {
-    code: string;
+    code: ErrorCode;
     message: string;
     statusCode: number;
     isOperational?: boolean;
@@ -26,6 +27,6 @@ export class AppError extends Error implements AppErrorContract {
     this.code = code;
     this.statusCode = statusCode;
     this.isOperational = isOperational;
-    this.details = details ?? undefined;
+    this.details = details;
   }
 }

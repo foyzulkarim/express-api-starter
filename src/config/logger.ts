@@ -1,5 +1,9 @@
 import { config } from './index.js';
 
+/**
+ * Pino logger configuration derived from validated environment variables.
+ * `redactPaths` prevents credentials from appearing in log output.
+ */
 export const loggerConfig = Object.freeze({
   level: config.LOG_LEVEL,
   pretty: config.NODE_ENV === 'development',

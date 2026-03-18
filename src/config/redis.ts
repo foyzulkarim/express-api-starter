@@ -1,5 +1,6 @@
 import { config } from './index.js';
 
-export const redisConfig = {
+/** Redis connection configuration derived from validated environment variables. */
+export const redisConfig = Object.freeze({
   url: config.REDIS_URL,
-} as const;
+});

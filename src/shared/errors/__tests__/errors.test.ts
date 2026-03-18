@@ -55,6 +55,8 @@ describe('AppError', () => {
 describe('HTTP Error Classes', () => {
   it('BadRequestError defaults', () => {
     const err = new BadRequestError();
+    expect(err).toBeInstanceOf(Error);
+    expect(err).toBeInstanceOf(AppError);
     expect(err.statusCode).toBe(400);
     expect(err.code).toBe('BAD_REQUEST');
     expect(err.isOperational).toBe(true);
@@ -62,24 +64,32 @@ describe('HTTP Error Classes', () => {
 
   it('UnauthorizedError defaults', () => {
     const err = new UnauthorizedError();
+    expect(err).toBeInstanceOf(Error);
+    expect(err).toBeInstanceOf(AppError);
     expect(err.statusCode).toBe(401);
     expect(err.code).toBe('UNAUTHORIZED');
   });
 
   it('ForbiddenError defaults', () => {
     const err = new ForbiddenError();
+    expect(err).toBeInstanceOf(Error);
+    expect(err).toBeInstanceOf(AppError);
     expect(err.statusCode).toBe(403);
     expect(err.code).toBe('FORBIDDEN');
   });
 
   it('NotFoundError defaults', () => {
     const err = new NotFoundError();
+    expect(err).toBeInstanceOf(Error);
+    expect(err).toBeInstanceOf(AppError);
     expect(err.statusCode).toBe(404);
     expect(err.code).toBe('RESOURCE_NOT_FOUND');
   });
 
   it('ConflictError defaults', () => {
     const err = new ConflictError();
+    expect(err).toBeInstanceOf(Error);
+    expect(err).toBeInstanceOf(AppError);
     expect(err.statusCode).toBe(409);
     expect(err.code).toBe('CONFLICT');
   });
@@ -87,6 +97,8 @@ describe('HTTP Error Classes', () => {
   it('ValidationError includes details', () => {
     const details = [{ field: 'name', message: 'Too short' }];
     const err = new ValidationError('Bad input', details);
+    expect(err).toBeInstanceOf(Error);
+    expect(err).toBeInstanceOf(AppError);
     expect(err.statusCode).toBe(422);
     expect(err.code).toBe('VALIDATION_ERROR');
     expect(err.details).toEqual(details);
@@ -94,12 +106,16 @@ describe('HTTP Error Classes', () => {
 
   it('RateLimitError defaults', () => {
     const err = new RateLimitError();
+    expect(err).toBeInstanceOf(Error);
+    expect(err).toBeInstanceOf(AppError);
     expect(err.statusCode).toBe(429);
     expect(err.code).toBe('RATE_LIMIT_EXCEEDED');
   });
 
   it('InternalError is not operational', () => {
     const err = new InternalError();
+    expect(err).toBeInstanceOf(Error);
+    expect(err).toBeInstanceOf(AppError);
     expect(err.statusCode).toBe(500);
     expect(err.code).toBe('INTERNAL_ERROR');
     expect(err.isOperational).toBe(false);

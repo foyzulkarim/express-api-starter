@@ -1,5 +1,6 @@
 import { config } from './index.js';
 
-export const databaseConfig = {
+/** Database configuration derived from validated environment variables. */
+export const databaseConfig = Object.freeze({
   url: config.DATABASE_URL,
-} as const;
+});

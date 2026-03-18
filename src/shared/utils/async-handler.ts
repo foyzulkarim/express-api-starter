@@ -1,5 +1,10 @@
 import type { Request, Response, NextFunction, RequestHandler } from 'express';
 
+/**
+ * Wraps an async Express route handler to forward any rejection to `next(err)`.
+ * Includes a guard to prevent `next` from being called more than once if the
+ * handler calls `next()` before the returned promise rejects.
+ */
 export const asyncHandler = (
   fn: (req: Request, res: Response, next: NextFunction) => Promise<unknown>,
 ): RequestHandler => {
@@ -11,9 +16,9 @@ export const asyncHandler = (
       next(err);
     };
     try {
-      Promise.resolve(fn(req, res, guardedNext)).catch(guardedNext);
+      return Promise.resolve(fn(req, res, guardedNext)).catch(guardedNext);
     } catch (err) {
-      guardedNext(err);
+      return guardedNext(err);
     }
   };
 };

@@ -1,3 +1,4 @@
+/** Frozen map of all application error code names to their string values. */
 export const ErrorCodes = Object.freeze({
   VALIDATION_ERROR: 'VALIDATION_ERROR',
   BAD_REQUEST: 'BAD_REQUEST',

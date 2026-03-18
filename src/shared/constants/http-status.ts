@@ -1,3 +1,4 @@
+/** Frozen map of HTTP status code names to their numeric values. */
 export const HttpStatus = Object.freeze({
   OK: 200,
   CREATED: 201,
