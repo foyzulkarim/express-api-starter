@@ -1,5 +1,7 @@
 # Express API Starter
 
+**version: 1.1.0** 
+
 Production-grade Express.js + TypeScript API starter template with Prisma, Redis, and OpenTelemetry.
 
 ## Requirements
