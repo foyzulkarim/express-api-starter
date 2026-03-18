@@ -20,7 +20,11 @@ export const envSchema = z.object({
     }),
   JWT_SECRET: z
     .string()
-    .min(64)
+    .min(32)
+    .refine(
+      (val) => new Set(val).size >= 8,
+      { message: 'JWT_SECRET has insufficient character diversity; use a cryptographically random value (e.g. openssl rand -hex 32)' },
+    )
     .refine(
       (val) => {
         if (process.env.NODE_ENV !== 'production') return true;

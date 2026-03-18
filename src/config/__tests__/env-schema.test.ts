@@ -6,7 +6,7 @@ const validEnv = {
   PORT: '3000',
   DATABASE_URL: 'postgresql://user:pass@localhost:5432/db',
   REDIS_URL: 'redis://localhost:6379',
-  JWT_SECRET: 'a'.repeat(64),
+  JWT_SECRET: 'abcdefghijklmnopqrstuvwxyzABCDEF', // 32 chars, 8+ unique
 };
 
 describe('envSchema', () => {
@@ -61,21 +61,37 @@ describe('envSchema', () => {
     }
   });
 
-  it('rejects JWT_SECRET shorter than 64 characters', () => {
-    const result = envSchema.safeParse({ ...validEnv, JWT_SECRET: 'a'.repeat(63) });
+  it('rejects JWT_SECRET shorter than 32 characters', () => {
+    const result = envSchema.safeParse({ ...validEnv, JWT_SECRET: 'abcdefghijklmnopqrstuvwxyzABCDE' }); // 31 chars
     expect(result.success).toBe(false);
     if (!result.success) {
       expect(result.error.flatten().fieldErrors).toHaveProperty('JWT_SECRET');
     }
   });
 
-  it('accepts JWT_SECRET of exactly 64 characters', () => {
-    const result = envSchema.safeParse({ ...validEnv, JWT_SECRET: 'a'.repeat(64) });
+  it('accepts JWT_SECRET of exactly 32 characters with sufficient diversity', () => {
+    const result = envSchema.safeParse({ ...validEnv, JWT_SECRET: 'abcdefghijklmnopqrstuvwxyzABCDEF' }); // 32 chars
     expect(result.success).toBe(true);
+  });
+
+  it('rejects JWT_SECRET with low entropy (repeated characters)', () => {
+    const result = envSchema.safeParse({ ...validEnv, JWT_SECRET: 'a'.repeat(32) });
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.flatten().fieldErrors).toHaveProperty('JWT_SECRET');
+    }
   });
 
   it('rejects invalid DATABASE_URL scheme', () => {
     const result = envSchema.safeParse({ ...validEnv, DATABASE_URL: 'not-a-url' });
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.flatten().fieldErrors).toHaveProperty('DATABASE_URL');
+    }
+  });
+
+  it('rejects DATABASE_URL with wrong scheme (valid URL but not postgresql)', () => {
+    const result = envSchema.safeParse({ ...validEnv, DATABASE_URL: 'http://localhost:5432/db' });
     expect(result.success).toBe(false);
     if (!result.success) {
       expect(result.error.flatten().fieldErrors).toHaveProperty('DATABASE_URL');
