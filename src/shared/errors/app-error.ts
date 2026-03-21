@@ -1,6 +1,7 @@
+import type { FieldError } from '../types/common.types.js';
+
 import type { AppErrorContract } from './app-error.contract.js';
 import type { ErrorCode } from './error-codes.js';
-import type { FieldError } from '../types/common.types.js';
 
 export class AppError extends Error implements AppErrorContract {
   public readonly code: ErrorCode;

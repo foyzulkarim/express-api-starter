@@ -66,10 +66,28 @@ CORS_ORIGINS=http://localhost:3000,http://localhost:5173
 
 ```
 src/
-├── server.ts           # Application entry point
-├── features/          # Feature modules (domain/api/shared)
-└── shared/            # Shared utilities and types
+├── server.ts              # Application entry point
+├── config/                # Validated env (`env.schema.ts`) and app config (e.g. logger wiring)
+├── features/              # Feature modules (domain / API / shared)
+├── infrastructure/        # Cross-cutting I/O: DB, cache, queue, observability (factories)
+└── shared/                # Shared utilities and types
 ```
+
+## Infrastructure layer
+
+`src/infrastructure/` holds **factories** for external systems so features stay testable and wiring stays in one place:
+
+| Area | Role |
+|------|------|
+| `database/prisma-client.ts` | Builds `PrismaClient` from `DATABASE_URL`. Prefer importing the client only from here (or feature infra) per file comment. |
+| `cache/redis-client.ts` | ioredis client for cache; logs connection errors to stderr. |
+| `cache/cache.service.ts` | Cache port + stub implementation (real Redis-backed logic planned in later phases). |
+| `queue/bullmq-client.ts` | Dedicated Redis connection for BullMQ (`maxRetriesPerRequest: null`). |
+| `observability/logger.ts` | Pino options and `createLogger`; redaction paths are assembled in `src/config/logger.ts` from env-backed settings. |
+| `observability/tracing.ts` | OpenTelemetry Node SDK with auto-instrumentations; import early in `server.ts` for correct hook order. |
+| `observability/metrics.ts` | Placeholder for future metrics. |
+
+Integration tests and local development expect **PostgreSQL** and **Redis** (see Docker Compose and `REDIS_URL` / `DATABASE_URL`).
 
 ## Tech Stack
 

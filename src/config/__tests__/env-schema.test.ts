@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+
 import { envSchema } from '../env.schema.js';
 
 const validEnv = {
@@ -35,7 +36,7 @@ describe('envSchema', () => {
   });
 
   it('rejects missing DATABASE_URL', () => {
-    const { DATABASE_URL, ...env } = validEnv;
+    const { DATABASE_URL: _DATABASE_URL, ...env } = validEnv;
     const result = envSchema.safeParse(env);
     expect(result.success).toBe(false);
     if (!result.success) {
@@ -44,7 +45,7 @@ describe('envSchema', () => {
   });
 
   it('rejects missing REDIS_URL', () => {
-    const { REDIS_URL, ...env } = validEnv;
+    const { REDIS_URL: _REDIS_URL, ...env } = validEnv;
     const result = envSchema.safeParse(env);
     expect(result.success).toBe(false);
     if (!result.success) {
@@ -53,7 +54,7 @@ describe('envSchema', () => {
   });
 
   it('rejects missing JWT_SECRET', () => {
-    const { JWT_SECRET, ...env } = validEnv;
+    const { JWT_SECRET: _JWT_SECRET, ...env } = validEnv;
     const result = envSchema.safeParse(env);
     expect(result.success).toBe(false);
     if (!result.success) {

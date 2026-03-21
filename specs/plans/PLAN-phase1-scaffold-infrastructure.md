@@ -1217,12 +1217,12 @@ git commit -m "feat: add Pino logger factory"
 > **Critical:** This file MUST be the first import in `src/server.ts`. OTel auto-instrumentation only works when loaded before other modules.
 
 ```typescript
-import { NodeSDK } from '@opentelemetry/sdk-node';
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
-import { NoopSpanExporter } from '@opentelemetry/sdk-trace-base';
+import { NodeSDK } from '@opentelemetry/sdk-node';
+import { NoopSpanProcessor } from '@opentelemetry/sdk-trace-base';
 
 const sdk = new NodeSDK({
-  traceExporter: new NoopSpanExporter(),
+  spanProcessors: [new NoopSpanProcessor()],
   instrumentations: [getNodeAutoInstrumentations()],
 });
 
