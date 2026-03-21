@@ -21,7 +21,7 @@ export default tseslint.config(
     },
     languageOptions: {
       parserOptions: {
-        projectService: true,
+        project: './tsconfig.eslint.json',
         tsconfigRootDir: import.meta.dirname,
       },
     },
@@ -70,9 +70,23 @@ export default tseslint.config(
     settings: {
       'import/resolver': {
         typescript: {
-          project: './tsconfig.json',
+          project: './tsconfig.eslint.json',
         },
       },
+    },
+  },
+  // Infrastructure database — allowed to import @prisma/client directly
+  {
+    files: ['src/infrastructure/database/**/*.ts'],
+    rules: {
+      'no-restricted-imports': 'off',
+    },
+  },
+  // Framework adapter utilities — allowed to import Express types
+  {
+    files: ['src/shared/utils/async-handler.ts', 'src/shared/utils/__tests__/async-handler.test.ts'],
+    rules: {
+      'no-restricted-imports': 'off',
     },
   },
 );

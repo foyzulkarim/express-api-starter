@@ -1,10 +1,10 @@
-import { NodeSDK } from '@opentelemetry/sdk-node';
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
-import { NoopSpanExporter } from '@opentelemetry/sdk-trace-base';
+import { NodeSDK } from '@opentelemetry/sdk-node';
+import { NoopSpanProcessor } from '@opentelemetry/sdk-trace-base';
 
 export function initTracing(): NodeSDK {
   const sdk = new NodeSDK({
-    traceExporter: new NoopSpanExporter(),
+    spanProcessors: [new NoopSpanProcessor()],
     instrumentations: [getNodeAutoInstrumentations()],
   });
   sdk.start();

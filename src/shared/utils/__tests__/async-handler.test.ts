@@ -1,6 +1,7 @@
+import type { Request, Response } from 'express';
 import { describe, it, expect, vi } from 'vitest';
+
 import { asyncHandler } from '../async-handler.js';
-import type { Request, Response, NextFunction } from 'express';
 
 describe('asyncHandler', () => {
   it('passes through on successful resolution', async () => {

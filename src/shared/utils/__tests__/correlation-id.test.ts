@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+
 import { getCorrelationId, runWithCorrelationId } from '../correlation-id.js';
 
 describe('correlation-id', () => {

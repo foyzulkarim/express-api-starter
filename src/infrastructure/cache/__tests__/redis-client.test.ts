@@ -1,7 +1,9 @@
 import { describe, it, expect, vi, beforeAll, beforeEach } from 'vitest';
 
-const MockRedis = vi.fn();
-vi.mock('ioredis', () => ({ default: MockRedis }));
+const mockOn = vi.fn();
+const mockRedisInstance = { on: mockOn };
+const MockRedis = vi.fn(() => mockRedisInstance);
+vi.mock('ioredis', () => ({ Redis: MockRedis }));
 
 let createRedisClient: typeof import('../redis-client.js')['createRedisClient'];
 
@@ -22,9 +24,12 @@ describe('createRedisClient', () => {
   });
 
   it('returns the Redis instance', () => {
-    const mockInstance = { status: 'ready' };
-    MockRedis.mockReturnValueOnce(mockInstance);
     const client = createRedisClient('redis://localhost:6379');
-    expect(client).toBe(mockInstance);
+    expect(client).toBe(mockRedisInstance);
+  });
+
+  it('attaches an error listener to prevent process crash on connection error', () => {
+    createRedisClient('redis://localhost:6379');
+    expect(mockOn).toHaveBeenCalledWith('error', expect.any(Function));
   });
 });

@@ -3,16 +3,14 @@ import { describe, it, expect, vi, beforeAll, beforeEach } from 'vitest';
 const mockStart = vi.fn();
 const mockSdk = { start: mockStart };
 const MockNodeSDK = vi.fn(() => mockSdk);
-
-const mockExporter = {};
-const MockNoopSpanExporter = vi.fn(() => mockExporter);
+const MockNoopSpanProcessor = vi.fn();
 
 vi.mock('@opentelemetry/sdk-node', () => ({ NodeSDK: MockNodeSDK }));
+vi.mock('@opentelemetry/sdk-trace-base', () => ({
+  NoopSpanProcessor: MockNoopSpanProcessor,
+}));
 vi.mock('@opentelemetry/auto-instrumentations-node', () => ({
   getNodeAutoInstrumentations: vi.fn(() => 'mock-instrumentation'),
-}));
-vi.mock('@opentelemetry/sdk-trace-base', () => ({
-  NoopSpanExporter: MockNoopSpanExporter,
 }));
 
 let initTracing: typeof import('../tracing.js')['initTracing'];
@@ -28,18 +26,18 @@ beforeEach(() => {
 });
 
 describe('initTracing', () => {
-  it('creates a NodeSDK instance with NoopSpanExporter', () => {
-    initTracing();
-    expect(MockNoopSpanExporter).toHaveBeenCalledOnce();
-    expect(MockNodeSDK).toHaveBeenCalledWith(
-      expect.objectContaining({ traceExporter: mockExporter }),
-    );
-  });
-
   it('creates a NodeSDK instance with auto-instrumentations', () => {
     initTracing();
     expect(MockNodeSDK).toHaveBeenCalledWith(
       expect.objectContaining({ instrumentations: ['mock-instrumentation'] }),
+    );
+  });
+
+  it('configures NodeSDK with NoopSpanProcessor', () => {
+    initTracing();
+    expect(MockNoopSpanProcessor).toHaveBeenCalledOnce();
+    expect(MockNodeSDK).toHaveBeenCalledWith(
+      expect.objectContaining({ spanProcessors: [expect.any(MockNoopSpanProcessor)] }),
     );
   });
 

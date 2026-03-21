@@ -182,13 +182,14 @@ import { describe, it, expect, vi, beforeAll, beforeEach } from 'vitest';
 const mockStart = vi.fn();
 const mockSdk = { start: mockStart };
 const MockNodeSDK = vi.fn(() => mockSdk);
+const MockNoopSpanProcessor = vi.fn();
 
 vi.mock('@opentelemetry/sdk-node', () => ({ NodeSDK: MockNodeSDK }));
+vi.mock('@opentelemetry/sdk-trace-base', () => ({
+  NoopSpanProcessor: MockNoopSpanProcessor,
+}));
 vi.mock('@opentelemetry/auto-instrumentations-node', () => ({
   getNodeAutoInstrumentations: vi.fn(() => 'mock-instrumentation'),
-}));
-vi.mock('@opentelemetry/sdk-trace-base', () => ({
-  NoopSpanExporter: vi.fn(() => 'mock-exporter'),
 }));
 
 let initTracing: typeof import('../tracing.js')['initTracing'];
@@ -204,10 +205,11 @@ beforeEach(() => {
 });
 
 describe('initTracing', () => {
-  it('creates a NodeSDK instance with NoopSpanExporter', () => {
+  it('configures NodeSDK with NoopSpanProcessor', () => {
     initTracing();
+    expect(MockNoopSpanProcessor).toHaveBeenCalledOnce();
     expect(MockNodeSDK).toHaveBeenCalledWith(
-      expect.objectContaining({ traceExporter: 'mock-exporter' }),
+      expect.objectContaining({ spanProcessors: [expect.any(MockNoopSpanProcessor)] }),
     );
   });
 
@@ -238,13 +240,13 @@ Expected: **RED** — module not found
 Create `src/infrastructure/observability/tracing.ts`:
 
 ```typescript
-import { NodeSDK } from '@opentelemetry/sdk-node';
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
-import { NoopSpanExporter } from '@opentelemetry/sdk-trace-base';
+import { NodeSDK } from '@opentelemetry/sdk-node';
+import { NoopSpanProcessor } from '@opentelemetry/sdk-trace-base';
 
 export function initTracing(): NodeSDK {
   const sdk = new NodeSDK({
-    traceExporter: new NoopSpanExporter(),
+    spanProcessors: [new NoopSpanProcessor()],
     instrumentations: [getNodeAutoInstrumentations()],
   });
   sdk.start();

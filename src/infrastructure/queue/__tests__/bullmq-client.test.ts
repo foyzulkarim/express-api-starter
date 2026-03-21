@@ -1,7 +1,9 @@
 import { describe, it, expect, vi, beforeAll, beforeEach } from 'vitest';
 
-const MockRedis = vi.fn();
-vi.mock('ioredis', () => ({ default: MockRedis }));
+const mockOn = vi.fn();
+const mockRedisInstance = { on: mockOn };
+const MockRedis = vi.fn(() => mockRedisInstance);
+vi.mock('ioredis', () => ({ Redis: MockRedis }));
 
 let createBullMQClient: typeof import('../bullmq-client.js')['createBullMQClient'];
 
@@ -27,5 +29,10 @@ describe('createBullMQClient', () => {
       expect.any(String),
       expect.objectContaining({ maxRetriesPerRequest: null }),
     );
+  });
+
+  it('attaches an error listener to prevent process crash on connection error', () => {
+    createBullMQClient('redis://localhost:6379');
+    expect(mockOn).toHaveBeenCalledWith('error', expect.any(Function));
   });
 });

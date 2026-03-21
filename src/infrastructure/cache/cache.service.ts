@@ -1,4 +1,4 @@
-import type Redis from 'ioredis';
+import type { Redis } from 'ioredis';
 
 export interface CacheService {
   get<T>(key: string): Promise<T | null>;

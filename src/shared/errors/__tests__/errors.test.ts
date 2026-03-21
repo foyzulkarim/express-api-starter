@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+
 import { AppError } from '../app-error.js';
 import {
   BadRequestError,

@@ -1,5 +1,6 @@
-import { describe, it, expect } from 'vitest';
 import { Writable } from 'node:stream';
+
+import { describe, it, expect } from 'vitest';
 
 function makeStream(): { stream: Writable; getOutput: () => string } {
   const chunks: Buffer[] = [];
